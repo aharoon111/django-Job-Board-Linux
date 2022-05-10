@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.utils.text import slugify
 # Create your models here.
 
 JOB_TYPE = (
@@ -8,7 +8,9 @@ JOB_TYPE = (
 )
 
 
-
+def image_upload(instance , filename):
+    imagename , extension = filename.split(".")
+    return "jobs/"
 
 
 class Job(models.Model):                              #table
@@ -21,6 +23,17 @@ class Job(models.Model):                              #table
     salary = models.IntegerField(default = 0)
     category = models.ForeignKey("Category", on_delete=models.CASCADE)
     Experience = models.IntegerField(default = 1)
+    image = models.ImageField(upload_to="media/")
+    
+    
+    
+    slug = models.SlugField(null=True , blank= True)
+    
+    
+    
+    def save(self,*args,**kwargs):
+        self.slug = slugify(self.title)        
+        super(Job,self).save(*args, **kwargs)
 
 
     def __str__(self):
